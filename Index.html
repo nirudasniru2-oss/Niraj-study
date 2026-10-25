@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Niraj Study Helper</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f0f5ff;color:#172033}
+header{background:#1646a0;color:white;text-align:center;padding:24px 12px}
+header h1{margin:0 0 8px}
+main{max-width:850px;margin:auto;padding:15px}
+.card{background:white;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 3px 12px #0001}
+label{display:block;font-weight:bold;margin-top:12px}
+select,input,textarea,button{width:100%;padding:12px;margin-top:7px;border:1px solid #ccd4e3;border-radius:8px;font-size:16px}
+button{background:#1646a0;color:white;border:0;font-weight:bold;cursor:pointer}
+button:hover{background:#0d347b}
+.secondary{background:#16845b}
+#lesson,#answer,#result{white-space:pre-wrap;line-height:1.7}
+footer{text-align:center;padding:20px;color:#596579}
+</style>
+</head>
+<body>
+<header>
+<h1>📚 Niraj Study Helper</h1>
+<p>Learn • Practise • Improve</p>
+</header>
+
+<main>
+<div class="card">
+<h2>🎓 Choose Your Class</h2>
+<label for="class">Class</label>
+<select id="class">
+<option value="">Select class</option>
+</select>
+
+<label for="board">Board</label>
+<select id="board">
+<option>SEBA / ASSEB</option>
+<option>CBSE</option>
+</select>
+
+<label for="language">Language</label>
+<select id="language">
+<option value="en">English</option>
+<option value="as">অসমীয়া (Assamese)</option>
+</select>
+
+<label for="subject">Subject</label>
+<select id="subject">
+<option value="science">Science / বিজ্ঞান</option>
+<option value="math">Mathematics / গণিত</option>
+<option value="english">English</option>
+<option value="social">Social Science / সমাজ বিজ্ঞান</option>
+</select>
+
+<label for="chapter">Chapter</label>
+<select id="chapter">
+<option value="intro">Introduction / পৰিচয়</option>
+<option value="life">Life Processes / জীৱন প্ৰক্ৰিয়া</option>
+<option value="chemical">Chemical Reactions / ৰাসায়নিক বিক্ৰিয়া</option>
+<option value="light">Light / পোহৰ</option>
+<option value="real">Real Numbers / বাস্তৱ সংখ্যা</option>
+<option value="polynomial">Polynomials / বহুপদ</option>
+<option value="environment">Environment / পৰিৱেশ</option>
+</select>
+
+<button onclick="showLesson()">Open Lesson / পাঠ খোলা</button>
+</div>
+
+<div class="card">
+<h2>📖 Lesson Notes</h2>
+<div id="lesson">Choose your class, subject and chapter, then open the lesson.</div>
+</div>
+
+<div class="card">
+<h2>❓ Ask a Question</h2>
+<textarea id="question" rows="3" placeholder="Write your question here..."></textarea>
+<button class="secondary" onclick="answerQuestion()">Get Demo Answer</button>
+<div id="answer"></div>
+</div>
+
+<div class="card">
+<h2>🎯 Quick Quiz</h2>
+<p id="quizQuestion">Which gas do humans need for respiration?</p>
+<div id="quizOptions">
+<button onclick="checkAnswer('oxygen')">Oxygen</button>
+<button onclick="checkAnswer('nitrogen')">Nitrogen</button>
+<button onclick="checkAnswer('carbon')">Carbon dioxide</button>
+</div>
+<div id="result"></div>
+<button class="secondary" onclick="nextQuiz()">Next Question</button>
+</div>
+</main>
+
+<footer>Made for learners ❤️ | Niraj Study Helper</footer>
+
+<script>
+for(let i=1;i<=12;i++){
+ const o=document.createElement("option");
+ o.value=i;o.textContent="Class "+i;
+ document.getElementById("class").appendChild(o);
+}
+
+const lessons={
+life:{
+en:"LIFE PROCESSES\n\nLife processes are activities needed to keep an organism alive.\n\n1. Nutrition: Taking in food and using it for energy and growth.\n2. Respiration: Releasing energy from food.\n3. Transportation: Moving substances inside the body.\n4. Excretion: Removing metabolic waste.\n\nRemember: Plants make food by photosynthesis.",
+as:"জীৱন প্ৰক্ৰিয়া\n\nজীৱক জীয়াই ৰাখিবলৈ প্ৰয়োজন হোৱা কামবোৰক জীৱন প্ৰক্ৰিয়া বোলে।\n\n১. পুষ্টি: খাদ্য গ্ৰহণ আৰু ব্যৱহাৰ কৰা।\n২. শ্বসন: খাদ্যৰ পৰা শক্তি মুক্ত কৰা।\n৩. পৰিবহণ: শৰীৰৰ ভিতৰত পদাৰ্থ কঢ়িয়াই নিয়া।\n৪. ৰেচন: শৰীৰৰ অপ্ৰয়োজনীয় বৰ্জ্য পদাৰ্থ উলিওৱা।"
+},
+chemical:{
+en:"CHEMICAL REACTIONS\n\nA chemical reaction changes reactants into new substances called products.\n\nExample:\n2H₂ + O₂ → 2H₂O\n\nHydrogen reacts with oxygen to form water.\n\nA balanced equation has equal numbers of each type of atom on both sides.",
+as:"ৰাসায়নিক বিক্ৰিয়া\n\nযি প্ৰক্ৰিয়াত বিক্ৰিয়ক পদাৰ্থৰ পৰা নতুন উৎপাদ সৃষ্টি হয়, তাক ৰাসায়নিক বিক্ৰিয়া বোলে।\n\nউদাহৰণ:\n2H₂ + O₂ → 2H₂O\n\nহাইড্ৰজেন আৰু অক্সিজেনৰ বিক্ৰিয়াত পানী উৎপন্ন হয়।\n\nসন্তুলিত সমীকৰণত দুয়োফালে প্ৰতিটো মৌলৰ পৰমাণুৰ সংখ্যা সমান থাকে।"
+},
+light:{
+en:"LIGHT\n\nLight is a form of energy that enables us to see objects.\n\nReflection occurs when light returns from a surface.\n\nThe angle of incidence equals the angle of reflection.\n\nA plane mirror forms an erect, virtual image of the same size.",
+as:"পোহৰ\n\nপোহৰ হৈছে শক্তিৰ এটা ৰূপ, যাৰ সহায়ত আমি বস্তু দেখা পাওঁ।\n\nপোহৰ কোনো পৃষ্ঠত পৰি উভতি আহিলে তাক প্ৰতিফলন বোলে।\n\nআপতন কোণ = প্ৰতিফলন কোণ।\n\nসমতল দাপোণত সমান আকাৰৰ, থিয় আৰু অসৎ প্ৰতিবিম্ব গঠন হয়।"
+},
+real:{
+en:"REAL NUMBERS\n\nA prime number has exactly two positive factors: 1 and itself.\n\nHCF is the greatest common factor.\nLCM is the smallest positive common multiple.\n\nEuclid's division lemma:\na = bq + r, where 0 ≤ r < b.",
+as:"বাস্তৱ সংখ্যা\n\nমৌলিক সংখ্যাৰ ধনাত্মক উৎপাদক মাত্ৰ দুটা: ১ আৰু সংখ্যাটো নিজে।\n\nHCF হৈছে সৰ্বাধিক সাধাৰণ উৎপাদক।\nLCM হৈছে আটাইতকৈ সৰু সাধাৰণ গুণিতক।\n\nইউক্লিডৰ বিভাজন সূত্ৰ:\na = bq + r, য'ত 0 ≤ r < b।"
+},
+polynomial:{
+en:"POLYNOMIALS\n\nA polynomial is an algebraic expression with non-negative integer powers of the variable.\n\nExample: x² + 3x + 2\n\nThe degree is the highest power of the variable with a non-zero coefficient.",
+as:"বহুপদ\n\nচলকৰ অঋণাত্মক পূৰ্ণসংখ্যা ঘাত থকা বীজগণিতীয় ৰাশিক বহুপদ বোলে।\n\nউদাহৰণ: x² + 3x + 2\n\nশূন্য নোহোৱা সহগযুক্ত চলকৰ সৰ্বোচ্চ ঘাতটোৱেই বহুপদৰ মাত্ৰা।"
+},
+environment:{
+en:"ENVIRONMENT\n\nAn ecosystem includes living organisms and their physical environment.\n\nA food chain shows how energy passes from one organism to another.\n\nReducing waste and protecting habitats help the environment.",
+as:"পৰিৱেশ\n\nজীৱ আৰু সিহঁতৰ ভৌতিক পৰিৱেশ মিলি পৰিস্থিতিতন্ত্ৰ গঠন হয়।\n\nখাদ্য শৃংখলে এটা জীৱৰ পৰা আন এটা জীৱলৈ শক্তি কেনেকৈ যায় দেখুৱায়।\n\nআৱৰ্জনা কমোৱা আৰু বাসস্থান সংৰক্ষণে পৰিৱেশ ৰক্ষা কৰে।"
+},
+intro:{
+en:"WELCOME TO YOUR LESSON\n\nChoose a chapter to study its sample notes.\n\nThese are introductory notes, not a complete textbook or official syllabus.",
+as:"তোমাৰ পাঠলৈ স্বাগতম!\n\nনমুনা টোকা পঢ়িবলৈ এটা অধ্যায় বাছনি কৰা।\n\nএইবোৰ প্ৰাৰম্ভিক টোকা, সম্পূৰ্ণ পাঠ্যপুথি বা চৰকাৰী পাঠ্যক্ৰম নহয়।"
+}
+};
+
+function showLesson(){
+ const chapter=document.getElementById("chapter").value;
+ const lang=document.getElementById("language").value;
+ const data=lessons[chapter]||lessons.intro;
+ document.getElementById("lesson").textContent=data[lang]||data.en;
+}
+
+function answerQuestion(){
+ const q=document.getElementById("question").value.trim();
+ const lang=document.getElementById("language").value;
+ if(!q){
+  document.getElementById("answer").textContent="Please write a question first.";
+  return;
+ }
+ document.getElementById("answer").textContent=
+ lang==="as"
+ ?"এইটো Demo Teacher। এতিয়া মোৰ ওচৰত সকলো প্ৰশ্নৰ উত্তৰ দিব পৰা AI সংযোগ নাই। প্ৰশ্নটোৰ সৈতে শ্ৰেণী আৰু অধ্যায়ৰ নাম লিখি চেষ্টা কৰা।"
+ :"This is a demo teacher, not a connected AI. It cannot answer every question yet. Include your class and chapter when asking.";
+}
+
+const quizzes=[
+{q:"Which gas do humans need for respiration?",opts:[["Oxygen","oxygen"],["Nitrogen","nitrogen"],["Carbon dioxide","carbon"]],a:"oxygen"},
+{q:"What is 7 × 8?",opts:[["54","54"],["56","56"],["64","64"]],a:"56"},
+{q:"Which organ pumps blood?",opts:[["Lungs","lungs"],["Heart","heart"],["Kidney","kidney"]],a:"heart"}
+];
+let qi=0,score=0,answered=false;
+function renderQuiz(){
+ const q=quizzes[qi];
+ document.getElementById("quizQuestion").textContent=q.q;
+ document.getElementById("quizOptions").innerHTML="";
+ q.opts.forEach(o=>{
+  const b=document.createElement("button");
+  b.textContent=o[0];
+  b.onclick=()=>checkAnswer(o[1]);
+  document.getElementById("quizOptions").appendChild(b);
+ });
+ document.getElementById("result").textContent="";
+ answered=false;
+}
+function checkAnswer(a){
+ if(answered)return;
+ answered=true;
+ if(a===quizzes[qi].a){
+  score++;
+  document.getElementById("result").textContent="Correct! 🎉 Score: "+score;
+ }else{
+  document.getElementById("result").textContent="Not quite. Correct answer: "+quizzes[qi].opts.find(o=>o[1]===quizzes[qi].a)[0]+". Score: "+score;
+ }
+}
+function nextQuiz(){
+ qi=(qi+1)%quizzes.length;
+ if(qi===0)score=0;
+ renderQuiz();
+}
+renderQuiz();
+</script>
+</body>
+  </html>
